@@ -1,3 +1,4 @@
+const { matchedData } = require("express-validator");
 const { tracksModel } = require("../models");
 
 /**
@@ -8,8 +9,12 @@ const { tracksModel } = require("../models");
  */
 
 const getItems = async (req, res) => {
-  const data = await tracksModel.find({});
-  res.send({ data });
+  try {
+    const data = await tracksModel.find({});
+    res.send({ data });
+  } catch (error) {
+    handleHttpError(res, "ERROR_GET_ITEMS", 403);
+  }
 };
 
 /**
@@ -25,11 +30,13 @@ const getItem = (req, res) => {};
  *  @param {*} res
  */
 const createItem = async (req, res) => {
-  const { body } = req;
-  console.log(body);
-  const data = await tracksModel.create(body);
-
-  res.send({ data });
+  try {
+    const body = matchedData(req);
+    const data = await tracksModel.create(body);
+    res.send({ data });
+  } catch (error) {
+    handleHttpError(res, "ERROR_CREATE_ITEM", 403);
+  }
 };
 
 /**
