@@ -22,7 +22,16 @@ const getItems = async (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-const getItem = (req, res) => {};
+const getItem = async (req, res) => {
+  try {
+    req = matchedData(req);
+    const { id } = req;
+    const data = await tracksModel.findById(id);
+    res.send({ data });
+  } catch (error) {
+    handleHttpError(res, "ERROR_GET_ITEM", 403);
+  }
+};
 
 /**
  * Insertr un registro
@@ -44,14 +53,37 @@ const createItem = async (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-const updateItem = (req, res) => {};
+const updateItem = async (req, res) => {
+  try {
+    const { id, ...body } = matchedData(req);
+    const data = await tracksModel.findOneAndUpdate(id, body, {
+      new: true, // Devuelve el objeto actualizado
+      // upsert: true  Si no existe lo crea
+    });
+    res.send({ data });
+  } catch (error) {
+    handleHttpError(res, "ERROR_UPDATE_ITEM", 403);
+  }
+};
 
 /**
  * Eliminar un registro
  * @param {*} req
  * @param {*} res
  */
-const deleteItem = (req, res) => {};
+const deleteItem = async (req, res) => {
+  try {
+    req = matchedData(req);
+    const { id } = req;
+    // hard delete - Borra el registro de la base de datos
+    const data = await tracksModel.deleteOne({ _id: id});
+    //soft delete - Cambia el estado del registro (oculta el registro en las busquedas pero aun se mantiene en la BD)
+    //const data = await tracksModel.delete({ _id: id})
+    res.send({ data });
+  } catch (error) {
+    handleHttpError(res, "ERROR_DELETE_ITEM", 403);
+  }
+};
 
 module.exports = {
   getItems,
