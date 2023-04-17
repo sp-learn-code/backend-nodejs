@@ -76,9 +76,9 @@ const deleteItem = async (req, res) => {
     req = matchedData(req);
     const { id } = req;
     // hard delete - Borra el registro de la base de datos
-    const data = await tracksModel.deleteOne({ _id: id});
+    //const data = await tracksModel.deleteOne({ _id: id});
     //soft delete - Cambia el estado del registro (oculta el registro en las busquedas pero aun se mantiene en la BD)
-    //const data = await tracksModel.delete({ _id: id})
+    const data = await tracksModel.delete({ _id: id})
     res.send({ data });
   } catch (error) {
     handleHttpError(res, "ERROR_DELETE_ITEM", 403);

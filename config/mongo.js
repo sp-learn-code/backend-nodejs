@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+mongoose.set('useFindAndModify', false);
+
 const dbConnection = () => {
   const DB_URI = process.env.DB_URI;
   try {
@@ -8,6 +10,7 @@ const dbConnection = () => {
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useCreateIndex: true,
       }
     );
     console.log("DB Connected");
