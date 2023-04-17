@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const { createItem } = require("../controllers/storage");
+const { createItem, getItem, getItems, deleteItem } = require("../controllers/storage");
 
 const uploadMiddleware = require("../utils/handleStorage");
+const { validatorGetItem } = require("../validators/storage");
 
 
 
@@ -11,11 +12,29 @@ const uploadMiddleware = require("../utils/handleStorage");
 
 // uploadMiddleware.single() => Para un solo archivo
 // uploadMiddleware.array() => Para varios archivos
+
+/**
+ * Crear un registro en la base de datos y subir un archivo
+**/
 router.post("/", uploadMiddleware.single("myfile"),createItem);
 
-router.get("/", (req, res) => {
-  console.log("hola");
-  res.send({ algo: 1 });
-});
+/**
+ *  Obtener lista de la base de datos 
+**/
+
+router.get("/",  getItems);
+
+/**
+ * Obtener un detalle
+**/
+
+router.get("/:id", validatorGetItem, getItem);
+
+
+/**
+ * Eliminar un registro
+**/
+
+router.delete("/:id",validatorGetItem, deleteItem);
 
 module.exports = router;
